@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Switch, Route } from "react-router-dom";
 import { AuthContext } from './contexts/authentication';
 import { App } from "./views/App";
@@ -9,6 +9,7 @@ import { FourZeroFour } from "./views/FourZeroFour";
 import { PrivateRoute } from "./components/PrivateRoute";
 
 export default function Routes() {
+  const [hasCheckedCredentials, setHasCheckedCredentials] = useState(false);
   const [token, setToken] = useState(null);
 
   const login = (token) => {
@@ -21,7 +22,16 @@ export default function Routes() {
     localStorage.removeItem("userData");
   }
 
-  return (
+  useEffect(() => {
+    const storedData = JSON.parse(localStorage.getItem("userData"));
+    if (storedData && storedData.token) {
+      login(storedData.token);
+    }
+
+    setHasCheckedCredentials(true);
+  }, []);
+
+  return hasCheckedCredentials ? (
     <AuthContext.Provider value={{ isLoggedIn: !!token, login: login, logout: logout }}>
       <Switch>
         <Route exact path="/" component={Home} />
@@ -32,5 +42,5 @@ export default function Routes() {
         <Route component={FourZeroFour} /> {/* 404 page not working */}
       </Switch>
     </AuthContext.Provider>
-  );
+  ) : null; // TODO: Replace null with loading page
 }

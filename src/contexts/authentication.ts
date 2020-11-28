@@ -10,6 +10,6 @@ export interface IAuthContext {
 export const AuthContext = createContext<IAuthContext>({
   isLoggedIn: false,
   token: null,
-  login: () => {},
+  login: (token: string) => {},
   logout: () => {}
 });
