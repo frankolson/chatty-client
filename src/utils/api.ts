@@ -21,6 +21,12 @@ export interface ICreateAccount {
   owner_password_confirmation: string;
 }
 
+export interface IProfile {
+  account_id: number | null;
+  name: string;
+  email: string;
+}
+
 export function login(loginValues: ILogin) {
   return fetch(`${serverAddress}/users/sign_in`, {
     method: 'POST',
@@ -57,5 +63,15 @@ export function createAccount(createAccountValues: ICreateAccount) {
     method: 'POST',
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ account: createAccountValues })
+  })
+}
+
+export function getMyProfile(token: string) {
+  return fetch(`${serverAddress}/my/profile`, {
+    headers: {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+      "Authorization": `Bearer ${token}`
+    }
   })
 }

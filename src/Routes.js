@@ -7,7 +7,8 @@ import { Login } from "./views/Login";
 import { Signup } from "./views/Signup";
 import { AccountCreation } from "./views/AccountCreation";
 import { FourZeroFour } from "./views/FourZeroFour";
-import { PrivateRoute } from "./components/PrivateRoute";
+import { AuthenticatedRoute } from "./components/AuthenticatedRoute";
+import { UnauthenticatedRoute } from "./components/UnauthenticatedRoute";
 
 export default function Routes() {
   const [hasCheckedCredentials, setHasCheckedCredentials] = useState(false);
@@ -36,12 +37,12 @@ export default function Routes() {
     <AuthContext.Provider value={{ isLoggedIn: !!token, login: login, logout: logout }}>
       <Switch>
         <Route exact path="/" component={Home} />
-        <Route exact path="/login" component={Login} />
-        <Route exact path="/signup" component={Signup} />
+        <UnauthenticatedRoute exact path="/login" component={Login} />
+        <UnauthenticatedRoute exact path="/signup" component={Signup} />
         <Route exact path="/accounts/new" component={AccountCreation} />
-        <PrivateRoute exact path="/accounts/:id" component={App} />
+        <AuthenticatedRoute exact path="/accounts/:id" component={App} />
 
-        <Route component={FourZeroFour} /> {/* 404 page not working */}
+        <Route component={FourZeroFour} />
       </Switch>
     </AuthContext.Provider>
   ) : null; // TODO: Replace null with loading page
