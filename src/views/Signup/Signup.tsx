@@ -2,14 +2,7 @@ import React, { ChangeEvent, FormEvent, useState, useContext, useEffect } from '
 import { Container, Row, Col, Card, Form, Button, Alert } from "react-bootstrap";
 import { useHistory } from 'react-router-dom';
 import { AuthContext } from '../../contexts/authentication';
-
-interface ISignup {
-  account_id: number | null;
-  name: string;
-  email: string;
-  password: string;
-  password_confirmation: string;
-}
+import { listAccounts, signup, ISignup } from '../../utils/api';
 
 interface ISignupResponse {
   id: string;
@@ -43,14 +36,7 @@ export default function Signup() {
   const handleFormSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    fetch('http://localhost:3000/users', {
-      method: 'POST',
-      headers: {
-        "Content-Type": "application/json",
-        "Accept": "application/json"
-      },
-      body: JSON.stringify({ user: signupValues })
-    }).then((response: Response) => {
+    signup(signupValues).then((response: Response) => {
       if (!response.ok) { throw response; }
 
       const jwtToken = response.headers.get('Authorization')!.split(' ')[1];
@@ -68,12 +54,7 @@ export default function Signup() {
   }
 
   useEffect(() => {
-    fetch('http://localhost:3000/accounts', {
-      headers: {
-        "Content-Type": "application/json",
-        "Accept": "application/json"
-      }
-    }).then((response: Response) => {
+    listAccounts().then((response: Response) => {
       if (!response.ok) { throw response; }
       return response.json();
     }).then((data: IAccount[]) => setAccounts(data))

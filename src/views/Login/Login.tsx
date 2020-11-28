@@ -2,11 +2,7 @@ import React, { ChangeEvent, FormEvent, useState, useContext } from 'react';
 import { Container, Row, Col, Card, Form, Button, Alert } from "react-bootstrap";
 import { useHistory } from 'react-router-dom';
 import { AuthContext } from '../../contexts/authentication';
-
-interface ILogin {
-  email: string;
-  password: string;
-}
+import { login, ILogin } from '../../utils/api';
 
 interface ISessionCreationResponse {
   id: string;
@@ -28,14 +24,7 @@ export default function Login() {
   const handleFormSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    fetch('http://localhost:3000/users/sign_in', {
-      method: 'POST',
-      headers: {
-        "Content-Type": "application/json",
-        "Accept": "application/json"
-      },
-      body: JSON.stringify({ user: loginValues })
-    }).then((response: Response) => {
+    login(loginValues).then((response: Response) => {
       if (!response.ok) { throw response; }
 
       const jwtToken = response.headers.get('Authorization')!.split(' ')[1];

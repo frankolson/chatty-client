@@ -2,14 +2,7 @@ import React, { ChangeEvent, FormEvent, useState, useContext } from 'react';
 import { Container, Row, Col, Card, Form, Button, Alert } from "react-bootstrap";
 import { useHistory } from 'react-router-dom';
 import { AuthContext } from '../../contexts/authentication';
-
-interface IAccountCreation {
-  name: string;
-  owner_name: string;
-  owner_email: string;
-  owner_password: string;
-  owner_password_confirmation: string;
-}
+import { createAccount, ICreateAccount } from '../../utils/api';
 
 interface IAccountCreationResponse {
   id: string;
@@ -26,7 +19,7 @@ export default function Login() {
   const history = useHistory();
   const authContext = useContext(AuthContext);
   const [formErrorMessage, setFormErrorMessage] = useState<string | null>(null);
-  const [accountValues, setAccountValues] = useState<IAccountCreation>({
+  const [accountValues, setAccountValues] = useState<ICreateAccount>({
     name: '',
     owner_name: '',
     owner_email: '',
@@ -37,11 +30,7 @@ export default function Login() {
   const handleFormSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    fetch('http://localhost:3000/accounts', {
-      method: 'POST',
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ account: accountValues })
-    }).then((response: Response) => {
+    createAccount(accountValues).then((response: Response) => {
       if (!response.ok) { throw response; }
 
       const jwtToken = response.headers.get('Authorization')!.split(' ')[1];
