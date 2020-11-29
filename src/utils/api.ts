@@ -14,11 +14,6 @@ export interface IProfile {
   email: string;
 }
 
-export interface IChannel {
-  id: number;
-  name: string;
-}
-
 export interface ILogin {
   email: string;
   password: string;
@@ -135,6 +130,23 @@ export function getMyProfile(authContext: IAuthContext, history: History) {
 
 export function listChannels(accountId: string, authContext: IAuthContext, history: History) {
   return fetch(`${serverAddress}/accounts/${accountId}/channels`, {
+    headers: {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+      "Authorization": `Bearer ${getAuthToken()}`
+    }
+  }).then((response: Response) => {
+      if (!response.ok) { throw response; }
+      return response;
+    })
+    .catch((errorResponse: Response) => {
+      checkForAuthError(errorResponse, authContext, history);
+      return errorResponse;
+    });
+}
+
+export function getChannel(accountId: string | number, channelId: string | number, authContext: IAuthContext, history: History) {
+  return fetch(`${serverAddress}/accounts/${accountId}/channels/${channelId}`, {
     headers: {
       "Content-Type": "application/json",
       "Accept": "application/json",

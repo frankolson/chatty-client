@@ -1,5 +1,7 @@
 import React from "react";
-import { IChannel } from "../../utils/api";
+import { Link } from "react-router-dom";
+import { IChannel } from "../../utils/types";
+import styles from "./ChannelLink.module.scss"
 
 interface IChannelLink {
   channel: IChannel;
@@ -7,6 +9,10 @@ interface IChannelLink {
 
 export default function ChannelLink({ channel }: IChannelLink) {
   return (
-    <p># {channel.name}</p>
+    <div className={`pl-3 ${styles.link}`}>
+      <Link to={`/accounts/${channel.account_id}/channels/${channel.id}`}>
+        # {channel.name}
+      </Link>
+    </div>
   )
 }

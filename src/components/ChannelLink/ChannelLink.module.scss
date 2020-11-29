@@ -1,0 +1,16 @@
+.link {
+  width: 100%;
+
+  &:hover {
+    background-color: #250825;
+  }
+
+  a {
+    color: #ece3ec;
+
+    &:hover {
+      color: #ece3ec;
+      text-decoration: none;
+    }
+  }
+}

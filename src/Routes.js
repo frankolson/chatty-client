@@ -40,7 +40,8 @@ export default function Routes() {
         <UnauthenticatedRoute exact path="/login" component={Login} />
         <UnauthenticatedRoute exact path="/signup" component={Signup} />
         <Route exact path="/accounts/new" component={AccountCreation} />
-        <AuthenticatedRoute exact path="/accounts/:id" component={App} />
+        <AuthenticatedRoute exact path="/accounts/:account_id" component={App} />
+        <AuthenticatedRoute exact path="/accounts/:account_id/channels/:channel_id" component={App} />
 
         <Route component={FourZeroFour} />
       </Switch>

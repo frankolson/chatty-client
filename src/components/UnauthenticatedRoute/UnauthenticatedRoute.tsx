@@ -1,7 +1,8 @@
 import React, { useContext, useState, useEffect } from "react";
 import { AuthContext } from "../../contexts/authentication";
 import { Redirect, Route, RouteComponentProps, useHistory } from "react-router-dom";
-import { getMyProfile, IProfile } from "../../utils/api";
+import { getMyProfile } from "../../utils/api";
+import { IProfile } from "../../utils/types";
 
 export default function UnauthenticatedRoute({ component: Component, ...rest }: any) {
   const history = useHistory();
