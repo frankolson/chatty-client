@@ -1,4 +1,23 @@
+import { History } from 'history';
+import { IAuthContext } from "../contexts/authentication";
+
 const serverAddress = 'http://localhost:3000';
+
+export interface IAccount {
+  id: number;
+  name: string;
+}
+
+export interface IProfile {
+  account_id: number | null;
+  name: string;
+  email: string;
+}
+
+export interface IChannel {
+  id: number;
+  name: string;
+}
 
 export interface ILogin {
   email: string;
@@ -21,10 +40,24 @@ export interface ICreateAccount {
   owner_password_confirmation: string;
 }
 
-export interface IProfile {
-  account_id: number | null;
-  name: string;
-  email: string;
+export function getAuthToken() {
+  const storedUserData = JSON.parse(localStorage.getItem("userData") || '{}')
+
+  if (storedUserData && storedUserData.token) {
+    return storedUserData.token
+  } else {
+    return undefined;
+  }
+}
+
+function checkForAuthError(errorResponse: Response, authContext: IAuthContext, history: History) {
+  if (errorResponse.status === 401) {
+    authContext.logout();
+
+    if (history.location.pathname !== '/login') {
+      history.push('/login');
+    }
+  }
 }
 
 export function login(loginValues: ILogin) {
@@ -58,6 +91,23 @@ export function listAccounts() {
   })
 }
 
+export function getAccount(accountId: string, authContext: IAuthContext, history: History): Promise<any> {
+  return fetch(`${serverAddress}/accounts/${accountId}`, {
+    headers: {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+      "Authorization": `Bearer ${getAuthToken()}`
+    }
+  }).then((response: Response) => {
+      if (!response.ok) { throw response; }
+      return response;
+    })
+    .catch((errorResponse: Response) => {
+      checkForAuthError(errorResponse, authContext, history);
+      return errorResponse;
+    });
+}
+
 export function createAccount(createAccountValues: ICreateAccount) {
   return fetch(`${serverAddress}/accounts`, {
     method: 'POST',
@@ -66,12 +116,36 @@ export function createAccount(createAccountValues: ICreateAccount) {
   })
 }
 
-export function getMyProfile(token: string) {
+export function getMyProfile(authContext: IAuthContext, history: History) {
   return fetch(`${serverAddress}/my/profile`, {
     headers: {
       "Content-Type": "application/json",
       "Accept": "application/json",
-      "Authorization": `Bearer ${token}`
+      "Authorization": `Bearer ${getAuthToken()}`
     }
-  })
+  }).then((response: Response) => {
+      if (!response.ok) { throw response; }
+      return response.json();
+    })
+    .catch((errorResponse: Response) => {
+      checkForAuthError(errorResponse, authContext, history);
+      return errorResponse;
+    });
+}
+
+export function listChannels(accountId: string, authContext: IAuthContext, history: History) {
+  return fetch(`${serverAddress}/accounts/${accountId}/channels`, {
+    headers: {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+      "Authorization": `Bearer ${getAuthToken()}`
+    }
+  }).then((response: Response) => {
+      if (!response.ok) { throw response; }
+      return response;
+    })
+    .catch((errorResponse: Response) => {
+      checkForAuthError(errorResponse, authContext, history);
+      return errorResponse;
+    });
 }

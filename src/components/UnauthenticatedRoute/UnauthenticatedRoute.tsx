@@ -9,23 +9,9 @@ export default function UnauthenticatedRoute({ component: Component, ...rest }: 
   const [profile, setProfile] = useState<IProfile | null>(null);
 
   useEffect(() => {
-    const storedData = JSON.parse(localStorage.getItem("userData") || '{}');
-
-    if (storedData && storedData.token) {
-      getMyProfile(storedData.token)
-        .then((response: Response) => {
-          if (!response.ok) { throw response; }
-          return response.json();
-        })
-        .then((data: IProfile) => setProfile(data))
-        .catch((errorResponse: Response) => {
-          if (errorResponse.status === 401) {
-            authContext.logout();
-            history.push('/login');
-          } else {
-            console.log(errorResponse);
-          }
-        });
+    if (authContext.isLoggedIn) {
+      getMyProfile(authContext, history)
+        .then((data: IProfile) => setProfile(data));
     }
   }, [authContext, history]);
 
