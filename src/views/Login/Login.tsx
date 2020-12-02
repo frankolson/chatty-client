@@ -1,7 +1,7 @@
 import React, { ChangeEvent, FormEvent, useState, useContext } from 'react';
 import { Container, Row, Col, Card, Form, Button, Alert } from "react-bootstrap";
 import { useHistory } from 'react-router-dom';
-import { AuthContext } from '../../contexts/authentication';
+import { AuthDispatchContext, login as contextLogin } from '../../contexts/authentication';
 import { login, ILogin } from '../../utils/api';
 
 interface ISessionCreationResponse {
@@ -17,7 +17,7 @@ interface ISessionCreationError {
 
 export default function Login() {
   const history = useHistory();
-  const authContext = useContext(AuthContext);
+  const authDispatchContext = useContext(AuthDispatchContext);
   const [formErrorMessage, setFormErrorMessage] = useState<string | null>(null);
   const [loginValues, setLoginValues] = useState<ILogin>({ email: '', password: '' });
 
@@ -28,7 +28,7 @@ export default function Login() {
       if (!response.ok) { throw response; }
 
       const jwtToken = response.headers.get('Authorization')!.split(' ')[1];
-      authContext.login(jwtToken);
+      contextLogin(authDispatchContext, jwtToken);
       return response.json();
     }).then((data: ISessionCreationResponse) => history.push(`/accounts/${data.account_id}`))
       .catch((error: Response) => (

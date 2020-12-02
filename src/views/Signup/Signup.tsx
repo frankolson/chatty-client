@@ -1,7 +1,7 @@
 import React, { ChangeEvent, FormEvent, useState, useContext, useEffect } from 'react';
 import { Container, Row, Col, Card, Form, Button, Alert } from "react-bootstrap";
 import { useHistory } from 'react-router-dom';
-import { AuthContext } from '../../contexts/authentication';
+import { AuthDispatchContext, login as contextLogin } from '../../contexts/authentication';
 import { listAccounts, signup, ISignup } from '../../utils/api';
 
 interface ISignupResponse {
@@ -22,7 +22,7 @@ interface IAccount {
 
 export default function Signup() {
   const history = useHistory();
-  const authContext = useContext(AuthContext);
+  const authDispatchContext = useContext(AuthDispatchContext);
   const [accounts, setAccounts] = useState<IAccount[]>([]);
   const [formErrorMessage, setFormErrorMessage] = useState<string | null>(null);
   const [signupValues, setSignupValues] = useState<ISignup>({
@@ -40,7 +40,7 @@ export default function Signup() {
       if (!response.ok) { throw response; }
 
       const jwtToken = response.headers.get('Authorization')!.split(' ')[1];
-      authContext.login(jwtToken);
+      contextLogin(authDispatchContext, jwtToken);
       return response.json();
     }).then((data: ISignupResponse) => history.push(`/accounts/${data.account_id}`))
       .catch((error: Response) => (

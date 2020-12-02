@@ -1,5 +1,7 @@
+import { Dispatch } from "react";
 import { History } from 'history';
-import { IAuthContext } from "../contexts/authentication";
+import { logout as contextLogout } from "../contexts/authentication";
+import { IAuthReducerAction } from "../reducers/authentication";
 
 const serverAddress = 'http://localhost:3000';
 
@@ -45,9 +47,9 @@ export function getAuthToken() {
   }
 }
 
-function checkForAuthError(errorResponse: Response, authContext: IAuthContext, history: History) {
+function checkForAuthError(errorResponse: Response, dispatch: Dispatch<IAuthReducerAction>, history: History) {
   if (errorResponse.status === 401) {
-    authContext.logout();
+    contextLogout(dispatch);
 
     if (history.location.pathname !== '/login') {
       history.push('/login');
@@ -86,7 +88,7 @@ export function listAccounts() {
   })
 }
 
-export function getAccount(accountId: string, authContext: IAuthContext, history: History): Promise<any> {
+export function getAccount(accountId: string, dispatch: Dispatch<IAuthReducerAction>, history: History): Promise<any> {
   return fetch(`${serverAddress}/accounts/${accountId}`, {
     headers: {
       "Content-Type": "application/json",
@@ -98,7 +100,7 @@ export function getAccount(accountId: string, authContext: IAuthContext, history
       return response;
     })
     .catch((errorResponse: Response) => {
-      checkForAuthError(errorResponse, authContext, history);
+      checkForAuthError(errorResponse, dispatch, history);
       return errorResponse;
     });
 }
@@ -111,7 +113,7 @@ export function createAccount(createAccountValues: ICreateAccount) {
   })
 }
 
-export function getMyProfile(authContext: IAuthContext, history: History) {
+export function getMyProfile(dispatch: Dispatch<IAuthReducerAction>, history: History) {
   return fetch(`${serverAddress}/my/profile`, {
     headers: {
       "Content-Type": "application/json",
@@ -123,12 +125,12 @@ export function getMyProfile(authContext: IAuthContext, history: History) {
       return response.json();
     })
     .catch((errorResponse: Response) => {
-      checkForAuthError(errorResponse, authContext, history);
+      checkForAuthError(errorResponse, dispatch, history);
       return errorResponse;
     });
 }
 
-export function listChannels(accountId: string, authContext: IAuthContext, history: History) {
+export function listChannels(accountId: string, dispatch: Dispatch<IAuthReducerAction>, history: History) {
   return fetch(`${serverAddress}/accounts/${accountId}/channels`, {
     headers: {
       "Content-Type": "application/json",
@@ -140,12 +142,12 @@ export function listChannels(accountId: string, authContext: IAuthContext, histo
       return response;
     })
     .catch((errorResponse: Response) => {
-      checkForAuthError(errorResponse, authContext, history);
+      checkForAuthError(errorResponse, dispatch, history);
       return errorResponse;
     });
 }
 
-export function getChannel(accountId: string | number, channelId: string | number, authContext: IAuthContext, history: History) {
+export function getChannel(accountId: string | number, channelId: string | number, dispatch: Dispatch<IAuthReducerAction>, history: History) {
   return fetch(`${serverAddress}/accounts/${accountId}/channels/${channelId}`, {
     headers: {
       "Content-Type": "application/json",
@@ -157,7 +159,7 @@ export function getChannel(accountId: string | number, channelId: string | numbe
       return response;
     })
     .catch((errorResponse: Response) => {
-      checkForAuthError(errorResponse, authContext, history);
+      checkForAuthError(errorResponse, dispatch, history);
       return errorResponse;
     });
 }

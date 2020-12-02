@@ -1,20 +1,21 @@
 import React, { useContext, useState, useEffect } from "react";
-import { AuthContext } from "../../contexts/authentication";
+import { AuthStateContext, AuthDispatchContext } from "../../contexts/authentication";
 import { Redirect, Route, RouteComponentProps, useHistory } from "react-router-dom";
 import { getMyProfile } from "../../utils/api";
 import { IProfile } from "../../utils/types";
 
 export default function UnauthenticatedRoute({ component: Component, ...rest }: any) {
   const history = useHistory();
-  const authContext = useContext(AuthContext);
+  const authStateContext = useContext(AuthStateContext);
+  const authDispatchContext = useContext(AuthDispatchContext);
   const [profile, setProfile] = useState<IProfile | null>(null);
 
   useEffect(() => {
-    if (authContext.isLoggedIn) {
-      getMyProfile(authContext, history)
+    if (!!authStateContext.token) {
+      getMyProfile(authDispatchContext, history)
         .then((data: IProfile) => setProfile(data));
     }
-  }, [authContext, history]);
+  }, [authStateContext, authDispatchContext, history]);
 
   function renderRedirect(props: RouteComponentProps) {
     return profile ? (
@@ -26,7 +27,7 @@ export default function UnauthenticatedRoute({ component: Component, ...rest }: 
     <Route
       {...rest}
       render={props =>
-        authContext.isLoggedIn ? renderRedirect(props) : <Component {...props} />
+        !!authStateContext.token ? renderRedirect(props) : <Component {...props} />
       }
     />
   )

@@ -3,7 +3,7 @@ import { Container, Row, Col } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
 import { getAccount, getChannel, listChannels } from "../../utils/api";
 import { IAccount, IChannel } from "../../utils/types";
-import { AuthContext } from "../../contexts/authentication";
+import { AuthDispatchContext } from "../../contexts/authentication";
 import styles from './App.module.scss';
 import { ChannelLink } from '../../components/ChannelLink';
 import { ChannelHeader } from '../../components/ChannelHeader';
@@ -11,14 +11,14 @@ import { Messages } from '../../components/Messages';
 import { NewMessageInput } from '../../components/NewMessageInput';
 
 export default function App(props: any) {
-  const authContext = useContext(AuthContext);
+  const authDispatchContext = useContext(AuthDispatchContext);
   const history = useHistory();
   const [account, setAccount] = useState<IAccount | null>(null);
   const [channel, setChannel] = useState<IChannel | null>(null);
   const [channels, setChannels] = useState<IChannel[]>([]);
 
   function loadAccountAndDefaultChannel() {
-    return getAccount(props.match.params.account_id, authContext, history)
+    return getAccount(props.match.params.account_id, authDispatchContext, history)
       .then((response: Response) => response.json())
       .then((data: IAccount) => {
         setAccount(data);
@@ -34,13 +34,13 @@ export default function App(props: any) {
   }
 
   function loadChannel(accountId: number, channelId: number) {
-    return getChannel(accountId, channelId, authContext, history)
+    return getChannel(accountId, channelId, authDispatchContext, history)
       .then((response: Response) => response.json())
       .then((data: IChannel) => setChannel(data));
   }
 
   function loadChannels() {
-    return listChannels(props.match.params.account_id, authContext, history)
+    return listChannels(props.match.params.account_id, authDispatchContext, history)
       .then((response: Response) => response.json())
       .then((data: IChannel[]) => setChannels(data));
   }
