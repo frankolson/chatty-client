@@ -5,11 +5,6 @@ import { IAuthReducerAction } from "../reducers/authentication";
 
 const serverAddress = 'http://localhost:3000';
 
-export interface IAccount {
-  id: number;
-  name: string;
-}
-
 export interface IProfile {
   account_id: number | null;
   name: string;

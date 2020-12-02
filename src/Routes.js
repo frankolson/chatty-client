@@ -9,20 +9,23 @@ import { FourZeroFour } from "./views/FourZeroFour";
 import { AuthenticatedRoute } from "./components/AuthenticatedRoute";
 import { UnauthenticatedRoute } from "./components/UnauthenticatedRoute";
 import { AuthProvider } from "./contexts/authentication";
+import { AppProvider } from "./contexts/app";
 
 export default function Routes() {
   return (
     <AuthProvider>
-      <Switch>
-        <Route exact path="/" component={Home} />
-        <UnauthenticatedRoute exact path="/login" component={Login} />
-        <UnauthenticatedRoute exact path="/signup" component={Signup} />
-        <Route exact path="/accounts/new" component={AccountCreation} />
-        <AuthenticatedRoute exact path="/accounts/:account_id" component={App} />
-        <AuthenticatedRoute exact path="/accounts/:account_id/channels/:channel_id" component={App} />
+      <AppProvider>
+        <Switch>
+          <Route exact path="/" component={Home} />
+          <UnauthenticatedRoute exact path="/login" component={Login} />
+          <UnauthenticatedRoute exact path="/signup" component={Signup} />
+          <Route exact path="/accounts/new" component={AccountCreation} />
+          <AuthenticatedRoute exact path="/accounts/:account_id" component={App} />
+          <AuthenticatedRoute exact path="/accounts/:account_id/channels/:channel_id" component={App} />
 
-        <Route component={FourZeroFour} />
-      </Switch>
+          <Route component={FourZeroFour} />
+        </Switch>
+      </AppProvider>
     </AuthProvider>
   );
 }
