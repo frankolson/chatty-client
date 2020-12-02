@@ -1,15 +1,21 @@
-import React from "react";
-import { IChannel } from "../../utils/types";
+import React, { useContext } from "react";
+import { AppStateContext } from "../../contexts/app";
 import styles from "./NewMessageInput.module.scss"
 
-interface INewMessageInput {
-  channel: IChannel;
-}
+export default function NewMessageInput() {
+  const { currentChannel } = useContext(AppStateContext);
 
-export default function NewMessageInput({ channel }: INewMessageInput) {
-  return (
+  function renderLoading() {
+    return (
+      <div className={`px-3 ${styles.newMessage}`}>
+        <div className="text-muted"><em>Loading...</em></div>
+      </div>
+    );
+  }
+
+  return currentChannel ? (
     <div className={`px-3 ${styles.newMessage}`}>
       <div>New Message Input</div>
     </div>
-  )
+  ) : renderLoading();
 }

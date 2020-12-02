@@ -2,17 +2,25 @@ import { IAccount, IChannel } from "../utils/types";
 
 export interface IAppReducerState {
   account?: IAccount;
+  currentChannel?: IChannel;
   channels: IChannel[];
 }
 
-export type AddAccountAction = {
+export type UpdateAccountAction = {
   type: "UPDATE_ACCOUNT";
   payload: {
     account: IAccount;
   }
 }
 
-export type AddChannelsAction = {
+export type UpdateCurrentChannelAction = {
+  type: "UPDATE_CURRENT_CHANNEL";
+  payload: {
+    currentChannel: IChannel;
+  }
+}
+
+export type UpdateChannelsAction = {
   type: "UPDATE_CHANNELS";
   payload: {
     channels: IChannel[];
@@ -20,11 +28,13 @@ export type AddChannelsAction = {
 }
 
 export type IAppReducerAction =
-  AddAccountAction |
-  AddChannelsAction;
+  UpdateAccountAction |
+  UpdateCurrentChannelAction |
+  UpdateChannelsAction;
 
 export const appInitialState: IAppReducerState = {
   account: undefined,
+  currentChannel: undefined,
   channels: []
 }
 
@@ -34,6 +44,11 @@ export function AppReducer(state: IAppReducerState, action: IAppReducerAction) {
       return {
         ...state,
         account: action.payload.account
+      };
+    case "UPDATE_CURRENT_CHANNEL":
+      return {
+        ...state,
+        currentChannel: action.payload.currentChannel
       };
     case "UPDATE_CHANNELS":
       return {

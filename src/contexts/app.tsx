@@ -10,6 +10,10 @@ export function updateAccount(dispatch: Dispatch<IAppReducerAction>, account: IA
   dispatch({ type: 'UPDATE_ACCOUNT', payload: { account } })
 }
 
+export function updateCurrentChannel(dispatch: Dispatch<IAppReducerAction>, currentChannel: IChannel) {
+  dispatch({ type: 'UPDATE_CURRENT_CHANNEL', payload: { currentChannel } })
+}
+
 export function updateChannels(dispatch: Dispatch<IAppReducerAction>, channels: IChannel[]) {
   dispatch({ type: 'UPDATE_CHANNELS', payload: { channels } })
 }

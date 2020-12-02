@@ -1,15 +1,21 @@
-import React from "react";
-import { IChannel } from "../../utils/types";
+import React, { useContext } from "react";
+import { AppStateContext } from "../../contexts/app";
 import styles from "./Messages.module.scss"
 
-interface IMessages {
-  channel: IChannel;
-}
+export default function Messages() {
+  const { currentChannel } = useContext(AppStateContext);
 
-export default function Messages({ channel }: IMessages) {
-  return (
+  function renderLoading() {
+    return (
+      <div className={`px-3 ${styles.messages}`}>
+        <div className="text-muted"><em>Loading...</em></div>
+      </div>
+    );
+  }
+
+  return currentChannel ? (
     <div className={`px-3 ${styles.messages}`}>
       <div>Messages</div>
     </div>
-  )
+  ) : renderLoading();
 }
